@@ -1,0 +1,24 @@
+Occupation,onetsoc_code,em_2018,em_2028,change,percent_change,median_wage
+"Total, all occupations",00-0000,161037.70 ,169435.90 ,8398.10 ,5.20 ,39810.00 
+Management occupations,11-0000,10193.30 ,10900.20 ,706.90 ,6.90 ,105660.00 
+Business and financial operations occupations,13-0000,8589.50 ,9181.30 ,591.80 ,6.90 ,69820.00 
+Computer and mathematical occupations,15-0000,4674.40 ,5268.30 ,593.90 ,12.70 ,88340.00 
+Architecture and engineering occupations,17-0000,2699.10 ,2812.40 ,113.30 ,4.20 ,81440.00 
+"Life, physical, and social science occupations",19-0000,1322.70 ,1420.20 ,97.40 ,7.40 ,68160.00 
+Community and social service occupations,21-0000,2730.10 ,3036.40 ,306.20 ,11.20 ,46090.00 
+Legal occupations,23-0000,1346.00 ,1439.30 ,93.30 ,6.90 ,81820.00 
+"Education, training, and library occupations",25-0000,9647.40 ,10160.30 ,512.90 ,5.30 ,50790.00 
+"Arts, design, entertainment, sports, and media occupations",27-0000,2899.80 ,2996.60 ,96.80 ,3.30 ,51150.00 
+Healthcare practitioners and technical occupations,29-0000,9107.80 ,10190.40 ,1082.60 ,11.90 ,68190.00 
+Healthcare support occupations,31-0000,4315.60 ,5100.80 ,785.20 ,18.20 ,28470.00 
+Protective service occupations,33-0000,3560.90 ,3656.00 ,95.20 ,2.70 ,41580.00 
+Food preparation and serving related occupations,35-0000,13664.00 ,15152.20 ,1488.30 ,10.90 ,24220.00 
+Building and grounds cleaning and maintenance occupations,37-0000,5756.90 ,6047.70 ,290.80 ,5.10 ,28330.00 
+Personal care and service occupations,39-0000,7117.20 ,8354.80 ,1237.60 ,17.40 ,26220.00 
+Sales and related occupations,41-0000,15728.60 ,15648.80 ,-79.80,-0.50,29630.00 
+Office and administrative support occupations,43-0000,22973.60 ,22365.50 ,-608.10,-2.60,37580.00 
+"Farming, fishing, and forestry occupations",45-0000,1096.90 ,1100.00 ,3.20,0.30,27180.00 
+Construction and extraction occupations,47-0000,7212.50 ,7916.50 ,704.00,9.80,47430.00 
+"Installation, maintenance, and repair occupations",49-0000,6108.10 ,6341.30 ,233.20,3.80,46630.00 
+Production occupations,51-0000,9452.40 ,9022.90 ,-429.50,-4.50,36000.00 
+Transportation and material moving occupations,53-0000,10841.00 ,11324.10 ,483.10,4.50,32440.00 
