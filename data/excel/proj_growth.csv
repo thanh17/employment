@@ -1,0 +1,32 @@
+Occupation,onetsoc_code,em_2018,em_2028,change,percent_change,median_wage
+"Total, all occupations",00-0000,161037.70,169435.90,8398.10,5.20,39810.00
+Personal care aides,39-9021,2421.20,3302.10,881.00,36.40,NaN
+"Combined food preparation and serving workers, including fast food",35-3021,3704.20,4344.30,640.10,17.30, NaN
+Registered nurses,29-1141,3059.80,3431.30,371.50,12.10,73300.00
+Home health aides,31-1011,831.80,1136.60,304.80,36.60, NaN
+"Cooks, restaurant",35-2014,1362.30,1661.30,299.00,21.90,27790.00
+"Software developers, applications",15-1132,944.20,1185.70,241.50,25.60, NaN
+Waiters and waitresses,35-3031,2634.60,2804.80,170.20,6.50,22890.00
+General and operations managers,11-1021,2376.40,2541.40,165.00,6.90,100780.00
+"Janitors and cleaners, except maids and housekeeping cleaners",37-2011,2404.40,2564.20,159.80,6.60,27430.00
+Medical assistants,31-9092,686.60,841.50,154.90,22.60,34800.00
+Construction laborers,47-2061,1405.00,1553.10,148.10,10.50,36860.00
+"Laborers and freight, stock, and material movers, hand",53-7062,2953.80,3097.90,144.00,4.90,29510.00
+Market research analysts and marketing specialists,13-1161,681.90,821.10,139.20,20.40,63790.00
+Nursing assistants,31-1014,1513.20,1648.60,135.40,8.90,29660.00
+Management analysts,13-1111,876.30,994.60,118.30,13.50,85260.00
+First-line supervisors of food preparation and serving workers,35-1012,988.90,1096.10,107.20,10.80,33400.00
+Landscaping and groundskeeping workers,37-3011,1205.20,1311.60,106.40,8.80,30440.00
+Financial managers,Nov-31,653.60,758.30,104.70,16.00,129890.00
+Heavy and tractor-trailer truck drivers,53-3032,1958.80,2058.50,99.70,5.10,45260.00
+Medical secretaries,43-6013,601.70,698.10,96.40,16.00,36580.00
+Accountants and auditors,13-2011,1424.00,1514.70,90.70,6.40,71550.00
+"Maintenance and repair workers, general",49-9071,1488.00,1573.40,85.40,5.70,39080.00
+Carpenters,47-2031,1006.50,1086.60,80.10,8.00,48330.00
+Licensed practical and licensed vocational nurses,29-2061,728.90,807.00,78.10,10.70,47480.00
+"Sales representatives, services, all other",41-3099,1060.60,1137.00,76.40,7.20,56130.00
+Electricians,47-2111,715.40,789.50,74.10,10.40,56180.00
+Taxi drivers and chauffeurs,53-3041,370.40,442.80,72.40,19.50, NaN
+Medical and health services managers,Nov-11,406.10,477.60,71.60,17.60,100980.00
+"Business operations specialists, all other",13-1199,1135.70,1207.00,71.30,6.30,73570.00
+Computer user support specialists,15-1151,671.80,742.70,70.90,10.60,52270.00
