@@ -181,6 +181,8 @@ jc <- jc %>%
              in_minor_grp = ifelse(substring(ONET18_SOC, 1, 5) == substring(ONET18_SOC_LY, 1, 5), 1, 0),
              in_broad_occ = ifelse(substring(ONET18_SOC, 1, 6) == substring(ONET18_SOC_LY, 1, 6), 1, 0))
 
+write.csv(x=jc, file="JobChanges_2011to19.csv",  row.names = FALSE)
+
 ```
 
 
