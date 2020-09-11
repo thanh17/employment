@@ -60,7 +60,7 @@ knitr::opts_chunk$set(fig.pos = 'H')
 # STEP 1. IMPORT DATA
 # ------------------------------------------------------------------------------------------------------#
 
-# Read in CPS Data
+### Read in CPS Data
 ddi <- read_ipums_ddi("cps_00003.xml")
 cps <- read_ipums_micro(ddi, data_file = "cps_00003.dat.gz", verbose = FALSE)
 
@@ -74,6 +74,15 @@ cps  <- subset(cps, ASECFLAG %in% c(1, 2) &  LABFORCE == 2) %>%
 # Create an ID variable to account for ASEC oversample
 cps <- cps %>% mutate(ID = ifelse(CPSIDP == "0", paste0(YEAR, "ASEC", 1:n()), CPSIDP))
 
+
+# subset to people who had jobs both years
+cps$OCC <- as.numeric(as.character(cps$OCC))
+cps$OCCLY <- as.numeric(as.character(cps$OCCLY))
+
+cps$OCC[cps$OCC == 0] <- NA
+cps$OCCLY[cps$OCCLY == 0] <- NA 
+
+cps <- subset(cps, !is.na(OCC) & !is.na(OCCLY))
 
 
 
@@ -112,35 +121,41 @@ xwalk_simp <- distinct(xwalk, CPS_OCC, ONET18_SOC, .keep_all = T) %>%
               subset(., select = -c(HSOC_OCC, ONET10_SOC_OCC))
 
 
+```
 
 
-# Subset to changed jobs and merge all
-cps$OCC <- as.numeric(as.character(cps$OCC))
-cps$OCCLY <- as.numeric(as.character(cps$OCCLY))
 
-cps$OCC[cps$OCC == 0] <- NA
-cps$OCCLY[cps$OCCLY == 0] <- NA 
 
-dat <- merge(x = subset(cps, select = c(YEAR, ID, ASECWT, EMPSTAT, WORKLY, OCC, OCCLY), OCC != OCCLY),
-             y = xwalk_simp,
-             by.x = "OCC", by.y = "CPS_OCC", 
-             all.x = T) 
+```{r include = FALSE}
 
-dat <- merge(x = dat,
-             y = xwalk_simp,
-             by.x = "OCCLY", by.y = "CPS_OCC", 
-             suffixes = c("","_LY"),
-             all.x = T)
+# ------------------------------------------------------------------------------------------------------#
+# STEP 2. AGGREGATE ALL CURRENT YEAR AND LAST YEAR JOB COMBINATIONS
+# ------------------------------------------------------------------------------------------------------#
+
+# Aggregate all combinations using CPS OCC Codes
+jc <- cps %>% 
+      group_by(OCC, OCCLY) %>%
+      summarise(count = sum(ASECWT))
+
+# Merge on ONET codes all  
+jc <- merge(x = jc,
+            y = subset(xwalk_simp, select =-c(SOCLvl)),
+            by.x = "OCC", by.y = "CPS_OCC", 
+            all.x = T) 
+
+jc <- merge(x = jc,
+            y = subset(xwalk_simp, select =-c(SOCLvl)),
+            by.x = "OCCLY", by.y = "CPS_OCC", 
+            suffixes = c("","_LY"),
+            all.x = T)
 
 
 # Adjust weights to account for multiple matches in xwalks
-dat <- merge(x = dat,
-             y = dat %>% group_by(YEAR, ID) %>%
-                 summarise(count = n()),
-             by = c("YEAR", "ID"), all = T) %>%
-       mutate(., ASECWT_adj = as.numeric(as.character(ASECWT))/count)
-
-dat <- dat[c("YEAR", "ID", "ASECWT", "ASECWT_adj", "count", "EMPSTAT", "OCC", "OCCLY", "CPS_Title", "CPS_Title_LY", "ONET18_SOC", "ONET18_SOC_LY", "ONET18_Title", "ONET18_Title_LY")]
+jc <- merge(x = subset(jc, select = -c(CPS_Title, ONET10_SOC, ONET10_SOC_LY, CPS_Title_LY)),
+            y = jc %>% group_by(OCC, OCCLY) %>%
+                summarise(n = n()),
+            by = c('OCC', 'OCCLY'), all = T) %>%
+       mutate(., count = as.numeric(as.character(count))/n)
 ```
 
 
@@ -148,23 +163,30 @@ dat <- dat[c("YEAR", "ID", "ASECWT", "ASECWT_adj", "count", "EMPSTAT", "OCC", "O
 ```{r include = FALSE}
 
 # ------------------------------------------------------------------------------------------------------#
-# STEP 2. CALCULATE JOB CHANGE FREQUENCY: Overall and by Title
+# STEP 3a. CALCULATE JOB COMBINATION FREQUENCY: Overall and by Title
 # ------------------------------------------------------------------------------------------------------#
+j1 <- jc
+total = sum(j1$count)
+j1 <- j1 %>% mutate(pct_tot = (count/total)*100)
 
-jc <- dat %>% 
-      group_by(ONET18_SOC, ONET18_SOC_LY) %>%
-      mutate(count = sum(ASECWT_adj)) %>%
-      subset(select = c(ONET18_SOC, ONET18_SOC_LY, ONET18_Title, ONET18_Title_LY, count)) %>%
-      distinct(., ONET18_SOC, ONET18_SOC_LY, .keep_all = T)
-
-total = sum(jc$count)
-jc <- jc %>% mutate(pct_tot = (count/total)*100)
-
-jc <- jc %>% 
+j1 <- j1 %>% 
       group_by(ONET18_SOC_LY) %>%
       mutate(count_socly = sum(count))
 
-jc$pct_socly <- (jc$count/jc$count_socly)*100
+j1$pct_socly <- (j1$count/j1$count_socly)*100
+
+# ------------------------------------------------------------------------------------------------------#
+# STEP 3b. CATEGORIZE JOB CHANGE TYPES
+# ------------------------------------------------------------------------------------------------------#
+
+j1 <- j1 %>%
+      mutate(same = ifelse(ONET18_SOC == ONET18_SOC_LY, 1, 0), # Does this artificially create job changes? In theory, we can't rule those out. 
+             in_grp = ifelse(substring(ONET18_SOC, 1, 2) == substring(ONET18_SOC_LY, 1, 2), 1, 0),
+             in_minor_grp = ifelse(substring(ONET18_SOC, 1, 5) == substring(ONET18_SOC_LY, 1, 5), 1, 0),
+             in_broad_occ = ifelse(substring(ONET18_SOC, 1, 6) == substring(ONET18_SOC_LY, 1, 6), 1, 0))
+
+
+write.csv(x=j1, file="JobCY_LY_2011to19.csv",  row.names = FALSE)
 ```
 
 
@@ -173,19 +195,39 @@ jc$pct_socly <- (jc$count/jc$count_socly)*100
 ```{r include = FALSE}
 
 # ------------------------------------------------------------------------------------------------------#
-# STEP 3. CATEGORIZE JOB CHANGE TYPES
+# STEP 4a. FOR CHANGES ONLY: CALCULATE JOB CHANGE FREQUENCY: Overall and by Title
 # ------------------------------------------------------------------------------------------------------#
 
-jc <- jc %>%
+j2 <- subset(jc, OCC != OCCLY) 
+
+total = sum(j2$count)
+j2 <- j2 %>% mutate(pct_tot = (count/total)*100)
+
+j2 <- j2 %>% 
+      group_by(ONET18_SOC_LY) %>%
+      mutate(count_socly = sum(count)) %>%
+      subset(., select =-c(n))
+
+j2$pct_socly <- (j2$count/j2$count_socly)*100
+
+# ------------------------------------------------------------------------------------------------------#
+# STEP 4b.  FOR CHANGES ONLY: CATEGORIZE JOB CHANGE TYPES
+# ------------------------------------------------------------------------------------------------------#
+
+j2 <- j2 %>%
       mutate(in_grp = ifelse(substring(ONET18_SOC, 1, 2) == substring(ONET18_SOC_LY, 1, 2), 1, 0),
              in_minor_grp = ifelse(substring(ONET18_SOC, 1, 5) == substring(ONET18_SOC_LY, 1, 5), 1, 0),
              in_broad_occ = ifelse(substring(ONET18_SOC, 1, 6) == substring(ONET18_SOC_LY, 1, 6), 1, 0))
 
-write.csv(x=jc, file="JobChanges_2011to19.csv",  row.names = FALSE)
+j2 <- j2[c("ONET18_SOC", "ONET18_SOC_LY", "ONET18_Title", "ONET18_Title_LY", "count", "pct_tot", "count_socly", "pct_socly", "in_grp", "in_minor_grp", "in_broad_occ")]
+
+write.csv(x=j2, file="JobChanges_2011to19.csv",  row.names = FALSE)
+
 
 ```
 
+to do
 
-
-
-
+ADD IN THE STAYERS
+hOW MATCHED
+HOW DIFFERENTS P-VALYE
