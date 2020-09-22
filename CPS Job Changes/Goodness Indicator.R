@@ -124,9 +124,9 @@ dat <- dat %>%
               wage_change_BetweenJobs = ((h_median_new.2 - h_median_new)/h_median_new)*100)
 
 dat <- distinct(dat)
+names(dat) = c("SOC2018_origin", "SOC2018_destination", "median_h_wage_o", "median_h_wage_d", "median_h_wage_d", "employment_projection_NewJob", "wage_change_BetweenJobs")
 
-
-
+write.csv(x=dat, file="GoodnessIndicators_allCombinations.csv",  row.names = FALSE)
 
 
 
