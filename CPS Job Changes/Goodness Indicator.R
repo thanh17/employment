@@ -137,12 +137,12 @@ write.csv(x=dat, file="GoodnessIndicators_allCombinations.csv",  row.names = FAL
 job_changes <- read.csv("./JobChanges_2011to19.csv")
                
 
-# Some combinations missing, e.g. "11-3012" - double check that BLS is indeed using SOC 2018?
-jc <- merge(x = job_changes, 
-            y = dat[c("SOC2018_origin", "SOC2018_destination", "employment_projection_NewJob", "wage_change_BetweenJobs")],
-            by.x = c("ONET18_SOC_LY", "ONET18_SOC"), by.y = c("SOC2018_origin", "SOC2018_destination"), all.x = T) 
-
-jc <- jc[-12:-15]
+# # Some combinations missing, e.g. "11-3012" - double check that BLS is indeed using SOC 2018?
+# jc <- merge(x = job_changes, 
+#             y = dat[c("SOC2018_origin", "SOC2018_destination", "employment_projection_NewJob", "wage_change_BetweenJobs")],
+#             by.x = c("ONET18_SOC_LY", "ONET18_SOC"), by.y = c("SOC2018_origin", "SOC2018_destination"), all.x = T) 
+# 
+# jc <- jc[-12:-15]
 
 #write.csv(x=jc, file="JobChanges_2011to19.csv",  row.names = FALSE)
 
