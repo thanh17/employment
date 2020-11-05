@@ -98,21 +98,21 @@ bls$h_median_new <- ifelse(is.na(bls$h_median), bls$a_median/2080, bls$h_median)
 
 # Create combos:
 soc_combos = expand.grid(onet$SOC_2018, onet$SOC_2018) %>% subset(., Var1 != Var2)
-names(soc_combos) <- c("SOC1", "SOC2")
+names(soc_combos) <- c("SOC2018_origin", "SOC2018_destination")
 
 
 # Merge on wage and growth info:
 dat <- merge(x = soc_combos,
              y = bls[c("SOC", "h_median_new")],
-             by.x = "SOC1", by.y = "SOC",
+             by.x = "SOC2018_origin", by.y = "SOC",
              all = T,
-             suffixes = c("",".1")) %>%
+             suffixes = c("",".or")) %>%
         
         merge(x = .,
               y = bls[c("SOC", "change_employment_pct", "h_median_new")],
-              by.x = "SOC2", by.y = "SOC",
+              by.x = "SOC2018_destination", by.y = "SOC",
               all = T,
-              suffixes = c("",".2")) 
+              suffixes = c("",".des")) 
 
 
 # Note: no wage change projection
@@ -121,10 +121,10 @@ dat$change_employment_pct <- as.numeric(as.character(dat$change_employment_pct))
 
 dat <- dat %>%
        mutate(employment_projection_NewJob = change_employment_pct,
-              wage_change_BetweenJobs = ((h_median_new.2 - h_median_new)/h_median_new)*100)
+              wage_change_BetweenJobs = ((h_median_new.des - h_median_new)/h_median_new)*100)
 
 dat <- distinct(dat)
-names(dat) = c("SOC2018_origin", "SOC2018_destination", "median_h_wage_o", "median_h_wage_d", "median_h_wage_d", "employment_projection_NewJob", "wage_change_BetweenJobs")
+names(dat) = c("SOC2018_destination", "SOC2018_origin", "median_h_wage_o", "median_h_wage_d", "median_h_wage_d", "employment_projection_NewJob", "wage_change_BetweenJobs")
 
 write.csv(x=dat, file="GoodnessIndicators_allCombinations.csv",  row.names = FALSE)
 
@@ -135,13 +135,16 @@ write.csv(x=dat, file="GoodnessIndicators_allCombinations.csv",  row.names = FAL
 # ---------------------------------------------------------------------------------------------------#
 # ---------------------------------------------------------------------------------------------------#
 job_changes <- read.csv("./JobChanges_2011to19.csv")
+               
 
 # Some combinations missing, e.g. "11-3012" - double check that BLS is indeed using SOC 2018?
 jc <- merge(x = job_changes, 
-            y = dat[c("SOC1", "SOC2", "employment_projection_NewJob", "wage_change_BetweenJobs")],
-            by.x = c("ONET18_SOC_LY", "ONET18_SOC"), by.y = c("SOC1", "SOC2"), all.x = T) 
-  
-write.csv(x=jc, file="JobChanges_2011to19.csv",  row.names = FALSE)
+            y = dat[c("SOC2018_origin", "SOC2018_destination", "employment_projection_NewJob", "wage_change_BetweenJobs")],
+            by.x = c("ONET18_SOC_LY", "ONET18_SOC"), by.y = c("SOC2018_origin", "SOC2018_destination"), all.x = T) 
+
+jc <- jc[-12:-15]
+
+#write.csv(x=jc, file="JobChanges_2011to19.csv",  row.names = FALSE)
 
 
 
